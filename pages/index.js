@@ -6,7 +6,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import DrawerAppBar from "./DrawerAppBar";
+import DrawerAppBar from "@/src/components/DrawerAppBar";
 
 const inter = Inter({ subsets: ["latin"] });
 

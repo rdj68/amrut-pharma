@@ -8,6 +8,7 @@ import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import { ListItemButton, ListItemText } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -17,6 +18,10 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Link } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import navItems from "../data/navItems";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { ArrowDropUp } from "@mui/icons-material";
+import { Collapse } from "@mui/material";
 
 const theme = createTheme({
   palette: {
@@ -29,40 +34,6 @@ const theme = createTheme({
 
 const drawerWidth = 240;
 ("");
-const navItems = [
-  { title: "Home", url: "/" },
-  { title: "About", url: "/about" },
-  {
-    title: "Courses",
-    url: "/courses",
-    submenu: [
-      { title: "Home", url: "/" },
-      { title: "Academics", url: "/academics" },
-      { title: "R&D", url: "/rd" },
-      { title: "IIC", url: "/iic" },
-      { title: "Students", url: "/students" },
-    ],
-  },
-  { title: "Academics", url: "/academics" },
-  { title: "R&D", url: "/rd" },
-  {
-    title: "IIC",
-    url: "/iic",
-    submenu: [
-      { title: "Home", url: "/" },
-      { title: "Academics", url: "/academics" },
-      { title: "R&D", url: "/rd" },
-      { title: "IIC", url: "/iic" },
-      { title: "Students", url: "/students" },
-    ],
-  },
-  { title: "Students", url: "/students" },
-  { title: "Training and Placement", url: "/training-placement" },
-  { title: "Events", url: "/events" },
-  { title: "Workshop", url: "/workshop" },
-  { title: "E Journal", url: "/e-journal" },
-  { title: "NAAC", url: "/naac" },
-];
 
 function DrawerAppBar(props) {
   const { window } = props;
@@ -73,16 +44,14 @@ function DrawerAppBar(props) {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+    <Box sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
         Amrutvahinin college of Pharmacy
       </Typography>
       <Divider />
       <List>
         {navItems.map((menu) => (
-          <ListItem key={menu.title} disablePadding>
-            <Link href={menu.url}>{menu.title}</Link>
-          </ListItem>
+          <SidebarMenuItem menu={menu} />
         ))}
       </List>
     </Box>
@@ -148,6 +117,7 @@ function DrawerAppBar(props) {
     </ThemeProvider>
   );
 }
+
 function BasicMenu({ menu }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -167,25 +137,77 @@ function BasicMenu({ menu }) {
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
         sx={{ color: "#fff" }}
+        onMouseEnter={handleClick}
       >
         {menu.title}
+        {<ArrowDropDownIcon />}
       </Button>
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
+        MenuListProps={{ onMouseLeave: handleClose }}
       >
         {menu.submenu.map((menu, index) => (
-          <MenuItem key={index} disablePadding>
-            <Link href={menu.url}>{menu.title}</Link>
+          <MenuItem key={index}>
+            <Link href={menu.url}>{menu.title} </Link>
           </MenuItem>
         ))}
       </Menu>
     </div>
+  );
+}
+
+function SidebarMenuItem({ menu }) {
+  const [open, setOpen] = React.useState(false);
+  const handleClick = () => {
+    setOpen((prev) => !prev);
+  };
+
+  return menu.submenu ? (
+    <>
+      <ListItemButton component="a" key={menu.title} onClick={handleClick}>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography variant="body2" style={{ color: "#1b5e20" }}>
+              {menu.title}
+              {open ? <ArrowDropDownIcon /> : <ArrowDropUp />}
+            </Typography>
+          }
+        />{" "}
+      </ListItemButton>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <div className="pl-5">
+          <List component="div" disablePadding>
+            {menu.submenu.map((child, key) => (
+              <ListItemButton component="a" key={key} href={child.url}>
+                <ListItemText
+                  disableTypography
+                  primary={
+                    <Typography variant="body2" style={{ color: "#1b5e20" }}>
+                      {child.title}
+                    </Typography>
+                  }
+                />{" "}
+              </ListItemButton>
+            ))}
+          </List>
+        </div>
+      </Collapse>
+    </>
+  ) : (
+    <ListItemButton component="a" key={menu.title} href={menu.url}>
+      <ListItemText
+        disableTypography
+        primary={
+          <Typography variant="body2" style={{ color: "#1b5e20" }}>
+            {menu.title}
+          </Typography>
+        }
+      />{" "}
+    </ListItemButton>
   );
 }
 
