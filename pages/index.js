@@ -6,10 +6,26 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import DrawerAppBar from "@/src/components/DrawerAppBar";
+import Header from "@/src/components/Header";
+import Carousel from "@/src/components/Carousel";
+import { Box, Typography } from "@mui/material";
+import { yellow } from "@mui/material/colors";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const inter = Inter({ subsets: ["latin"] });
-
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#1b5e20",
+    },
+    secondary: yellow,
+  },
+  breakpoints: {
+    values: {
+      md: 768,
+    },
+  },
+});
 export default function Home() {
   return (
     <>
@@ -22,7 +38,34 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/logo.png" />
       </Head>
-      <DrawerAppBar />
+
+      <Box>
+        <Header />
+        <Carousel></Carousel>
+        <Box marginTop="5vh" gap="2vh">
+          <Typography
+            align="center"
+            color="#1b5e20"
+            variant="h4"
+            sx={{ fontWeight: "bold", fontFamily: "sans-serif" }}
+            gutterBottom
+          >
+            E-Resources
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "2vh",
+              justifyContent: "center",
+            }}
+          >
+            <img src="/campus-ERP1.jpg"></img>
+            <img src="/online-feedback.jpg"></img>
+            <img src="/alumni.jpg"></img>
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 }

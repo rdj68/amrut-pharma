@@ -1,5 +1,4 @@
 import * as React from "react";
-import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -7,20 +6,18 @@ import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import { ListItemButton, ListItemText } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import { yellow } from "@mui/material/colors";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Link } from "@mui/material";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import navItems from "../data/navItems";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { ArrowDropUp } from "@mui/icons-material";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Collapse } from "@mui/material";
 
 const theme = createTheme({
@@ -30,10 +27,14 @@ const theme = createTheme({
     },
     secondary: yellow,
   },
+  breakpoints: {
+    values: {
+      md: 768,
+    },
+  },
 });
 
-const drawerWidth = 240;
-("");
+const drawerWidth = 300;
 
 function DrawerAppBar(props) {
   const { window } = props;
@@ -50,8 +51,10 @@ function DrawerAppBar(props) {
       </Typography>
       <Divider />
       <List>
-        {navItems.map((menu) => (
-          <SidebarMenuItem menu={menu} />
+        {navItems.map((menu, key) => (
+          <div key={key}>
+            <SidebarMenuItem menu={menu} />
+          </div>
         ))}
       </List>
     </Box>
@@ -62,35 +65,49 @@ function DrawerAppBar(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ display: "flex" }}>
+      <Box>
         <CssBaseline />
-        <AppBar component="nav">
+        <AppBar component="nav" sx={{ position: "relative" }}>
           <Toolbar>
             <IconButton
               color="inherit"
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: "none" } }}
+              sx={{ mr: 2, display: { md: "none" } }}
             >
               <MenuIcon />
             </IconButton>
             {/* Large screen elements render code */}
-            <Box sx={{ display: { xs: "none", sm: "flex" } }} p={2}>
-              {navItems.map((menu) =>
-                menu.submenu ? (
-                  <BasicMenu menu={menu} />
-                ) : (
-                  <Button
-                    href={menu.url}
-                    key={menu.title}
-                    sx={{ color: "#fff" }}
-                  >
-                    {menu.title}
-                  </Button>
-                )
-              )}
-            </Box>
+            {/* <Container sx={{ display: { xs: "none", sm: "flex" } }} p={2}> */}
+
+            <div className="hidden md:flex w-full justify-center">
+              <ul className="flex ">
+                {navItems.map((menu, key) => (
+                  <div key={key} className=" hover:bg-green-900">
+                    {menu.submenu ? (
+                      <BasicMenu menu={menu} />
+                    ) : (
+                      // <Button
+                      //   href={menu.url}
+                      //   key={menu.title}
+                      //   sx={{ color: "#fff", fullwidth: true }}
+                      // >
+                      //   {menu.title}
+                      // </Button>
+                      <li>
+                        <Link href={menu.url}>
+                          <div className="flex p-5 cursor-pointer font-semibold items-center justify-center text-white  resize-none">
+                            <p>{menu.title}</p>
+                          </div>
+                        </Link>
+                      </li>
+                    )}
+                  </div>
+                ))}
+              </ul>
+            </div>
+            {/* </Container> */}
           </Toolbar>
         </AppBar>
         <Box component="nav">
@@ -129,33 +146,55 @@ function BasicMenu({ menu }) {
   };
 
   return (
-    <div>
-      <Button
-        id="basic-button"
-        aria-controls={open ? "basic-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
-        onClick={handleClick}
-        sx={{ color: "#fff" }}
-        onMouseEnter={handleClick}
-      >
-        {menu.title}
-        {<ArrowDropDownIcon />}
-      </Button>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{ onMouseLeave: handleClose }}
-      >
-        {menu.submenu.map((menu, index) => (
-          <MenuItem key={index}>
-            <Link href={menu.url}>{menu.title} </Link>
-          </MenuItem>
-        ))}
-      </Menu>
-    </div>
+    // <div>
+    //   <Button
+    //     id="basic-button"
+    //     aria-controls={open ? "basic-menu" : undefined}
+    //     aria-haspopup="true"
+    //     aria-expanded={open ? "true" : undefined}
+    //     onClick={handleClick}
+    //     sx={{ color: "#fff" }}
+    //   >
+    //     {menu.title}
+    //     {<ArrowDropDownIcon />}
+    //   </Button>
+    //   <Menu
+    //     id="basic-menu"
+    //     anchorEl={anchorEl}
+    //     open={open}
+    //     onClose={handleClose}
+    //     // MenuListProps={{ onMouseLeave: handleClose }}
+    //   >
+    //     {menu.submenu.map((menu, index) => (
+    //       <MenuItem key={index}>
+    //         <Link href={menu.url}>{menu.title} </Link>
+    //       </MenuItem>
+    //     ))}
+    //   </Menu>
+    // </div>
+    <li onMouseEnter={handleClick} onMouseLeave={handleClose}>
+      <div className="flex p-5 cursor-pointer font-semibold items-center justify-center text-white">
+        <p>{menu.title}</p>
+        {anchorEl ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+      </div>
+      {anchorEl && (
+        <ul
+          className={
+            "flex flex-col absolute -mt-4 gap-2 p-2 z-50 justify-center items-center bg-white text-black border-[1px] rounded-md "
+          }
+        >
+          {menu.submenu.map((item, index) => (
+            <Link
+              href={item.url}
+              key={index}
+              className="hover:bg-gray-100 transition-all duration-300 ease-out hover:text-blue-700 rounded-md px-3 w-full cursor-pointer"
+            >
+              {item.title}
+            </Link>
+          ))}
+        </ul>
+      )}
+    </li>
   );
 }
 
@@ -173,7 +212,7 @@ function SidebarMenuItem({ menu }) {
           primary={
             <Typography variant="body2" style={{ color: "#1b5e20" }}>
               {menu.title}
-              {open ? <ArrowDropDownIcon /> : <ArrowDropUp />}
+              {open ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
             </Typography>
           }
         />{" "}
