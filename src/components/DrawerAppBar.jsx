@@ -19,6 +19,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Collapse } from "@mui/material";
+import { Padding } from "@mui/icons-material";
 
 const theme = createTheme({
   palette: {
@@ -146,67 +147,43 @@ function BasicMenu({ menu }) {
   };
 
   return (
-    // <div>
-    //   <Button
-    //     id="basic-button"
-    //     aria-controls={open ? "basic-menu" : undefined}
-    //     aria-haspopup="true"
-    //     aria-expanded={open ? "true" : undefined}
-    //     onClick={handleClick}
-    //     sx={{ color: "#fff" }}
-    //   >
-    //     {menu.title}
-    //     {<ArrowDropDownIcon />}
-    //   </Button>
-    //   <Menu
-    //     id="basic-menu"
-    //     anchorEl={anchorEl}
-    //     open={open}
-    //     onClose={handleClose}
-    //     // MenuListProps={{ onMouseLeave: handleClose }}
-    //   >
-    //     {menu.submenu.map((menu, index) => (
-    //       <MenuItem key={index}>
-    //         <Link href={menu.url}>{menu.title} </Link>
-    //       </MenuItem>
-    //     ))}
-    //   </Menu>
-    // </div>
     <li onMouseEnter={handleClick} onMouseLeave={handleClose}>
       <div className="flex p-5 cursor-pointer font-semibold items-center justify-center text-white">
         <p>{menu.title}</p>
         {anchorEl ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </div>
+
       {anchorEl && (
-        <ul
-          className={
-            "flex flex-col absolute -mt-4 gap-2 p-2 z-50 justify-center items-center bg-white text-black border-[1px] rounded-md "
-          }
-        >
-          {menu.submenu.map((item, index) => (
-            <Link
-              href={item.url}
-              key={index}
-              className="hover:bg-gray-100 transition-all duration-300 ease-out hover:text-blue-700 rounded-md px-3 w-full cursor-pointer"
-            >
-              {item.title}
-            </Link>
+        <div className="flex flex-wrap absolute -mt-4 p-3 z-50 rounded-md bg-gray-100">
+          {menu.submenu.map((items, index) => (
+            <ul className={"flex flex-col z-50  p-2 text-black "}>
+              <p className="underline pb-4">{items.title}</p>
+
+              {items.submenu.map((item) => (
+                <Link
+                  href={item.url}
+                  key={index}
+                  className="hover:bg-gray-100 transition-all duration-300 ease-out hover:text-blue-700 pr-10 pl-4 w-full cursor-pointer"
+                >
+                  {item.title}
+                </Link>
+              ))}
+            </ul>
           ))}
-        </ul>
+        </div>
       )}
     </li>
   );
 }
 
 function SidebarMenuItem({ menu }) {
-  const [open, setOpen] = React.useState(false);
-  const handleClick = () => {
-    setOpen((prev) => !prev);
+  const [open, setopen] = React.useState(false);
+  const handleClick1 = () => {
+    setopen((prev) => !prev);
   };
-
   return menu.submenu ? (
     <>
-      <ListItemButton component="a" key={menu.title} onClick={handleClick}>
+      <ListItemButton component="a" key={menu.title} onClick={handleClick1}>
         <ListItemText
           disableTypography
           primary={
@@ -220,17 +197,8 @@ function SidebarMenuItem({ menu }) {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <div className="pl-5">
           <List component="div" disablePadding>
-            {menu.submenu.map((child, key) => (
-              <ListItemButton component="a" key={key} href={child.url}>
-                <ListItemText
-                  disableTypography
-                  primary={
-                    <Typography variant="body2" style={{ color: "#1b5e20" }}>
-                      {child.title}
-                    </Typography>
-                  }
-                />{" "}
-              </ListItemButton>
+            {menu.submenu.map((items, key) => (
+              <SidebarMenuItem menu={items} />
             ))}
           </List>
         </div>
