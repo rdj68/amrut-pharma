@@ -89,13 +89,6 @@ function DrawerAppBar(props) {
                     {menu.submenu ? (
                       <BasicMenu menu={menu} />
                     ) : (
-                      // <Button
-                      //   href={menu.url}
-                      //   key={menu.title}
-                      //   sx={{ color: "#fff", fullwidth: true }}
-                      // >
-                      //   {menu.title}
-                      // </Button>
                       <li>
                         <Link href={menu.url}>
                           <div className="flex p-5 cursor-pointer font-semibold items-center justify-center text-white  resize-none">
@@ -156,19 +149,31 @@ function BasicMenu({ menu }) {
       {anchorEl && (
         <div className="flex flex-wrap absolute -mt-4 p-3 z-50 rounded-md bg-gray-100">
           {menu.submenu.map((items, index) => (
-            <ul className={"flex flex-col z-50  p-2 text-black "}>
-              <p className="underline pb-4">{items.title}</p>
-
-              {items.submenu.map((item) => (
+            <>
+              {menu.isDoubleLayered && (
+                <ul className={"flex flex-col z-50  p-2 text-black "}>
+                  <p className="underline pb-4">{items.title}</p>
+                  {items.submenu.map((item) => (
+                    <Link
+                      href={item.url}
+                      key={index}
+                      className="hover:bg-gray-100 transition-all duration-300 ease-out hover:text-blue-700 pr-10 pl-4 w-full cursor-pointer"
+                    >
+                      {item.title}
+                    </Link>
+                  ))}
+                </ul>
+              )}
+              {!menu.isDoubleLayered && (
                 <Link
-                  href={item.url}
+                  href={items.url}
                   key={index}
                   className="hover:bg-gray-100 transition-all duration-300 ease-out hover:text-blue-700 pr-10 pl-4 w-full cursor-pointer"
                 >
-                  {item.title}
+                  {items.title}
                 </Link>
-              ))}
-            </ul>
+              )}
+            </>
           ))}
         </div>
       )}
@@ -197,14 +202,19 @@ function SidebarMenuItem({ menu }) {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <div className="pl-5">
           <List component="div" disablePadding>
-            {menu.submenu.map((items, key) => (
-              <SidebarMenuItem menu={items} />
+            {menu.submenu.map((item) => (
+              <SidebarMenuItem menu={item} />
             ))}
           </List>
         </div>
       </Collapse>
     </>
   ) : (
+    <SidebarSingleElementRender menu={menu} />
+  );
+}
+function SidebarSingleElementRender({ menu }) {
+  return (
     <ListItemButton component="a" key={menu.title} href={menu.url}>
       <ListItemText
         disableTypography
@@ -217,5 +227,4 @@ function SidebarMenuItem({ menu }) {
     </ListItemButton>
   );
 }
-
 export default DrawerAppBar;
